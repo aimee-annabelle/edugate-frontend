@@ -8,6 +8,8 @@ import Register from "./pages/Register";
 import { Toaster } from "react-hot-toast";
 import ProtectedLayout from "./pages/layout/ProtectedLayout";
 import Dashboard from "./pages/Dashboard";
+import ProfilePage from "./pages/Profile";
+import ResourcesPage from "./pages/Resources";
 
 function App() {
   const router = createBrowserRouter([
@@ -27,6 +29,8 @@ function App() {
       element: <ProtectedLayout />,
       children: [
         { index: true, element: <Dashboard /> },
+        { path: "profile", element: <ProfilePage /> },
+        { path: "resources", element: <ResourcesPage /> },
       ],
     },
   ]);

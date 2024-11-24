@@ -5,8 +5,10 @@ import toast from "react-hot-toast";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     const form = e.currentTarget;
     const formData = {
@@ -19,8 +21,10 @@ export default function Login() {
         localStorage.setItem("token", data.token);
         navigate("/dashboard");
         toast.success("Successfully logged in");
+        setLoading(false);  
       } else {
         toast.error("Failed to login");
+        setLoading(false);
       }
     } catch (err: unknown) {
       if (
@@ -40,6 +44,7 @@ export default function Login() {
         toast.error("An error occurred while logging in");
       }
     }
+    setLoading(false);
   };
   return (
     <div className="mt-24 px-36 py-10 flex flex-col items-center">
@@ -82,8 +87,9 @@ export default function Login() {
         <button
           type="submit"
           className="bg-primary text-white text-lg px-16 py-3 rounded-md mt-10"
+          disabled={loading}
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
       <p className="mt-4">

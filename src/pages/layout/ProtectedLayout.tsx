@@ -6,7 +6,7 @@ export default function ProtectedLayout() {
     const token = getToken();
 
     return (
-        <main>
+        <main className="flex">
         <Sidebar />
         {token ? <Outlet /> : <Navigate to="/login" replace />}
         </main>

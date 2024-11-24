@@ -1,4 +1,9 @@
+import { useAuthStore } from "../util/authStore";
+
 export default function Dashboard() {
-    return <div>Dashboard</div>;
+    return <div>
+        <h1>Dashboard</h1>
+        <p>Welcome, {useAuthStore.getState().user?.name}</p>
+    </div>;
 }
 
