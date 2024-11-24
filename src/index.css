@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+body {
+    background-color: #f0f7fe;
+    font-family: "jost", sans-serif;
+  }
+}
