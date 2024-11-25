@@ -1,89 +1,139 @@
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import FileUploader from "../components/FileUploader";
-import { useState } from "react";
-import { addResource, Resource } from "../services/resources";
+import { getResources, deleteResource } from "../services/resources";
+import AddResource from "../components/AddResource";
+import { ArrowDownTrayIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useAuthStore } from "../util/authStore";
+import { Resource, ResourceWithUser } from "../util/types";
+
 export default function ResourcesPage() {
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
-const [loading, setLoading] = useState(false);
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const resource = Object.fromEntries(formData.entries()) as Resource;
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const user = useAuthStore().user;
+  async function fetchResources() {
     setLoading(true);
-    const newResource = await addResource({ ...resource, fileUrl: fileUrl as string });
-    if (newResource) {
-      toast.success("Resource added successfully");
-      (e.target as HTMLFormElement).reset();
-      setFileUrl(null);
-    } else {
-      toast.error("Failed to add resource");
+    const data = await getResources();
+    if (data) {
+      const currentUserData = data.filter((resource: ResourceWithUser) => resource.creator._id === user?._id);
+      setResources(currentUserData);
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    fetchResources();
+  }, [user]);
+
+  async function handleDelete(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this resource?"
+    );
+    if (!confirmed) return;
+
+    const result = await deleteResource(id);
+    if (result) {
+      toast.success("Resource deleted successfully");
+      fetchResources();
+    } else {
+      toast.error("Failed to delete resource");
+    }
+  }
+
   return (
     <div className="flex flex-col mt-10 px-20 py-10 gap-5 w-full">
-      <h1 className="text-2xl font-bold text-primary">Add Resources</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <div className="flex flex-col gap-5 w-full">
-          <label className="font-bold">Title</label>
-          <input
-            type="text"
-            placeholder="Title"
-            className="border-2 xl:w-1/3 border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-5 w-full">
-          <label className="font-bold">Description</label>
-          <input
-            type="text"
-            placeholder="Description"
-            className="border-2 xl:w-1/3 border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-5 w-full">
-          <label className="font-bold">Type</label>
-          <input
-            type="text"
-            placeholder="Type"
-            className="border-2 xl:w-1/3 border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-5 w-full">
-          <label className="font-bold">Subject</label>
-          <input
-            type="text"
-            placeholder="Subject"
-            className="border-2 xl:w-1/3 border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-5 w-full">
-          <label className="font-bold">Grade Level</label>
-          <input
-            type="text"
-            placeholder="Grade Level"
-            className="border-2 xl:w-1/3 border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-5 xl:w-1/3">
-          <FileUploader
-            setFileUrl={setFileUrl}
-            acceptedFormats={[".pdf"]}
-            maxSize={25}
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-primary text-white px-4 py-2 rounded-md xl:w-1/3"
-          disabled={loading}
+      <div className="flex justify-between items-center">
+        <h1
+          className={`text-2xl font-bold text-primary ${
+            showAddForm ? "text-center w-full" : ""
+          }`}
         >
-          {loading ? "Adding..." : "Add"}
+          {showAddForm ? "Add New Resource" : "My Resources"}
+        </h1>
+        <button
+          onClick={() => setShowAddForm(true)}
+          className={`bg-primary text-white px-4 py-2 rounded-md ${
+            showAddForm ? "hidden" : ""
+          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          Add New Resource
         </button>
-      </form>
+      </div>
+
+      {showAddForm ? (
+        <AddResource
+          onSuccess={() => {
+            setShowAddForm(false);
+            fetchResources();
+          }}
+          onCancel={() => setShowAddForm(false)}
+        />
+      ) : (
+        <div className="mt-5">
+          {loading ? (
+            <p>Loading...</p>
+          ) : resources.length === 0 ? (
+            <p>No resources found. Add your first resource!</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white rounded-lg shadow">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Type
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Subject
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Grade Level
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {resources.map((resource) => (
+                    <tr key={resource._id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {resource.title}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {resource.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {resource.subject}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {resource.gradeLevel}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
+                        <a
+                          href={resource.fileUrl}
+                          download
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <ArrowDownTrayIcon className="w-6 h-6" />
+                        </a>
+                        <button
+                          onClick={() => handleDelete(resource._id)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <TrashIcon className="w-6 h-6" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

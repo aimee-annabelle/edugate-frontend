@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { HomeIcon, RectangleStackIcon, UserIcon, ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo-light.svg";
+import { useAuthStore } from "../util/authStore";
 
 export default function Sidebar() {
     const navigate = useNavigate();
     function handleLogout() {
-        localStorage.removeItem("token");
-        navigate("/login");
+        useAuthStore.getState().logout();
+        navigate("/");
     }
     return (
         <div className="bg-blue-600 sticky left-0 top-0 bottom-0 text-white h-screen w-64 flex flex-col gap-24 py-10">

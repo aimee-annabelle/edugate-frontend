@@ -1,10 +1,7 @@
 import { api } from "../util/api";
 import { useAuthStore } from "../util/authStore";
+import { LoginData } from "../util/types";
 
-interface LoginData {
-  email: string;
-  password: string;
-}
 
 export const login = async (userData: LoginData) => {
   const { data } = await api.post('/auth/login', userData);
