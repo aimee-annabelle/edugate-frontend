@@ -9,7 +9,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import ResourcesPage from "./pages/Resources";
-import HomePage from "./pages/Home";
+import Home from "./pages/Home";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,7 +17,7 @@ function App() {
       path: "/",
       element: <PublicLayout />,
       children: [
-        { index: true, element: <HomePage /> },
+        { index: true, element: <Home /> },
         { path: "/about", element: <About /> },
         { path: "/contact", element: <Contact /> },
         { path: "/login", element: <Login /> },
