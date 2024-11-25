@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { getResources, deleteResource } from "../services/resources";
 import AddResource from "../components/AddResource";
-import { ArrowDownTrayIcon, TrashIcon } from "@heroicons/react/24/outline";
+import EditResource from "../components/EditResource";
+import { ArrowDownTrayIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useAuthStore } from "../util/authStore";
 import { Resource, ResourceWithUser } from "../util/types";
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = useAuthStore().user;
   async function fetchResources() {
@@ -24,6 +27,11 @@ export default function ResourcesPage() {
   useEffect(() => {
     fetchResources();
   }, [user]);
+
+  async function handleEdit(resource: Resource) {
+    setSelectedResource(resource);
+    setShowEditForm(true);
+  }
 
   async function handleDelete(id: string) {
     const confirmed = window.confirm(
@@ -45,22 +53,31 @@ export default function ResourcesPage() {
       <div className="flex justify-between items-center">
         <h1
           className={`text-2xl font-bold text-primary ${
-            showAddForm ? "text-center w-full" : ""
+            showAddForm ? "text-center w-full" : showEditForm ? "text-center w-full" : ""
           }`}
         >
-          {showAddForm ? "Add New Resource" : "My Resources"}
+          {showAddForm ? "Add New Resource" : showEditForm ? "Edit Resource" : "My Resources"}
         </h1>
         <button
           onClick={() => setShowAddForm(true)}
           className={`bg-primary text-white px-4 py-2 rounded-md ${
-            showAddForm ? "hidden" : ""
+            showAddForm ? "hidden" : showEditForm ? "hidden" : ""
           } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           Add New Resource
         </button>
       </div>
 
-      {showAddForm ? (
+      {showEditForm ? (
+        <EditResource
+          resource={selectedResource!}
+          onSuccess={() => {
+            setShowEditForm(false);
+            fetchResources();
+          }}
+          onCancel={() => setShowEditForm(false)}
+        />
+      ) : showAddForm ? (
         <AddResource
           onSuccess={() => {
             setShowAddForm(false);
@@ -119,12 +136,16 @@ export default function ResourcesPage() {
                         >
                           <ArrowDownTrayIcon className="w-6 h-6" />
                         </a>
+                        <button onClick={() => handleEdit(resource)}>
+                          <PencilIcon className="w-6 h-6" />
+                        </button>
                         <button
                           onClick={() => handleDelete(resource._id)}
                           className="text-red-600 hover:text-red-800"
                         >
                           <TrashIcon className="w-6 h-6" />
                         </button>
+
                       </td>
                     </tr>
                   ))}

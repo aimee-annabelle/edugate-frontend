@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Landing() {
+    const navigate = useNavigate();
   return (
     <div className="mt-24 px-36 py-24 text-center">
       <h1 className="text-6xl font-bold">
@@ -10,7 +13,7 @@ export default function Landing() {
         Edugate provides all necessary material to generate and access resources
         from accross different regions
       </p>
-      <button className="bg-primary text-white text-lg px-16 py-3 rounded-md mt-10">
+      <button className="bg-primary text-white text-lg px-16 py-3 rounded-md mt-10" onClick={() => navigate("/login")}>
         Get Started
       </button>
     </div>

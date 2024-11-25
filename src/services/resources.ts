@@ -1,12 +1,13 @@
 import { api } from "../util/api";
-import { Resource } from "../util/types";
+import { Resource, ResourceDto, Review } from "../util/types";
 
-export async function getResources() {
+export async function getResources(): Promise<ResourceDto[]> {
   try {
     const response = await api.get(`/resources`);
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -35,5 +36,14 @@ export async function updateResource(id: string, resource: Partial<Resource>) {
   } catch (error) {
     console.error(error);
     return null;
+  }
+}
+
+export async function addRating(id: string, rating: Review) {
+  try {
+    const response = await api.post(`/resources/${id}/ratings`, rating);
+    return response.data;
+  } catch (error) {
+    console.error(error);
   }
 }
