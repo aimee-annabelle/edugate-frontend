@@ -11,6 +11,7 @@ import { useAuthStore } from "../util/authStore";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const user = useAuthStore.getState().user;
   function handleLogout() {
     useAuthStore.getState().logout();
     navigate("/");
@@ -50,6 +51,7 @@ export default function Sidebar() {
           <RectangleStackIcon className="w-6 h-6" />
           Resources
         </NavLink>
+        {user?.role === "admin" && (
         <NavLink
           to="users"
           className={({ isActive }) => `
@@ -63,7 +65,8 @@ export default function Sidebar() {
         >
           <UsersIcon className="w-6 h-6" />
           Users
-        </NavLink>
+          </NavLink>
+        )}
         <NavLink
           to="profile"
           className={({ isActive }) => `
