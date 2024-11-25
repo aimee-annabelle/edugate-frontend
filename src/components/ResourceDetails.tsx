@@ -88,7 +88,8 @@ export default function ResourceDetails({ resource, onClose, getRandomImage }: R
                     <img
                         src={image!}
                         alt={resource.title}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-lg hover:cursor-pointer hover:opacity-80"
+                        onClick={() => window.open(resource.fileUrl, '_blank')}
                     />
                 </div>
 

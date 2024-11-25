@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { getResources, deleteResource } from "../services/resources";
 import AddResource from "../components/AddResource";
 import EditResource from "../components/EditResource";
-import { ArrowDownTrayIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useAuthStore } from "../util/authStore";
 import { Resource, ResourceWithUser } from "../util/types";
 
@@ -131,13 +131,13 @@ export default function ResourcesPage() {
                       <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
                         <a
                           href={resource.fileUrl}
-                          download
+                          target="_blank"
                           className="text-blue-600 hover:text-blue-800"
                         >
-                          <ArrowDownTrayIcon className="w-6 h-6" />
+                          <EyeIcon className="w-6 h-6" />
                         </a>
                         <button onClick={() => handleEdit(resource)}>
-                          <PencilIcon className="w-6 h-6" />
+                          <PencilIcon className="w-6 h-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(resource._id)}
