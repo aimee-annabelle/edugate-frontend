@@ -20,10 +20,6 @@ export default function Dashboard() {
         setLoading(true);
         const data = await getResources();
         if (data) {
-            console.log(data.map(resource => {
-                console.log(resource.ratings.length);
-                return resource.ratings.reduce((acc, rating) => acc + rating.rating, 0) / resource.ratings.length;
-            }));
             setResources(data);
         }
         setLoading(false);

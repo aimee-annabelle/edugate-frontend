@@ -3,6 +3,13 @@ export type User = {
   name: string;
   email: string;
 };
+export type UserDto = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  isVerified: boolean;
+};
 export type Resource = {
   _id: string;
   title: string;

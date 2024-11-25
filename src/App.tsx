@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import ResourcesPage from "./pages/Resources";
 import Landing from "./pages/Landing";
-
+import UsersPage from "./pages/Users";
 
 function App() {
   const router = createBrowserRouter([
@@ -32,6 +32,7 @@ function App() {
         { index: true, element: <Dashboard /> },
         { path: "profile", element: <ProfilePage /> },
         { path: "resources", element: <ResourcesPage /> },
+        { path: "users", element: <UsersPage /> },
       ],
     },
   ]);
