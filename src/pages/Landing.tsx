@@ -1,4 +1,4 @@
-export default function Home() {
+export default function Landing() {
   return (
     <div className="mt-24 px-36 py-24 text-center">
       <h1 className="text-6xl font-bold">

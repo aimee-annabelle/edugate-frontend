@@ -9,7 +9,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import ResourcesPage from "./pages/Resources";
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
+
 
 function App() {
   const router = createBrowserRouter([
@@ -17,7 +18,7 @@ function App() {
       path: "/",
       element: <PublicLayout />,
       children: [
-        { index: true, element: <Home /> },
+        { index: true, element: <Landing /> },
         { path: "/about", element: <About /> },
         { path: "/contact", element: <Contact /> },
         { path: "/login", element: <Login /> },
