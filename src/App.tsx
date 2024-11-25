@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import PublicLayout from "./pages/layout/PublicLayout";
 import ProtectedLayout from "./pages/layout/ProtectedLayout";
-import HomePage from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
@@ -10,6 +9,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import ResourcesPage from "./pages/Resources";
+import HomePage from "./pages/Home";
 
 function App() {
   const router = createBrowserRouter([
