@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { useAuthStore } from "../util/authStore";
 import { UserDto } from "../util/types";
 import EditUser from "../components/EditUser";
-import { getUsers, deleteUser as deleteUserService } from "../services/users";
+import { getUsers, updateUser } from "../services/users";
+import toast from "react-hot-toast";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserDto[]>([]);
@@ -30,22 +30,30 @@ export default function UsersPage() {
   async function handleEdit(user: UserDto) {
     setSelectedUser(user);
     setShowEditForm(true);
-  }
-
-  async function handleDelete(id: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    if (!confirmed) return;
-
-    const result = await deleteUserService(id);
-    if (result) {
-      toast.success("User deleted successfully");
-      fetchUsers();
-    } else {
-      toast.error("Failed to delete user");
+    try {
+      const editedUser = await updateUser(user._id, user);
+      if (editedUser) {
+        toast.success("User updated successfully");
+      }
+    } catch (error) {
+      toast.error(`Failed to update user: ${error}`);
     }
   }
+
+  // async function handleDelete(id: string) {
+  //   const confirmed = window.confirm(
+  //     "Are you sure you want to delete this user?"
+  //   );
+  //   if (!confirmed) return;
+
+  //   const result = await deleteUserService(id);
+  //   if (result) {
+  //     toast.success("User deleted successfully");
+  //     fetchUsers();
+  //   } else {
+  //     toast.error("Failed to delete user");
+  //   }
+  // }
 
   return (
     <div className="flex flex-col mt-10 px-20 py-10 gap-5 w-full">
@@ -102,20 +110,20 @@ export default function UsersPage() {
                         {user.role}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
-                        <button 
+                        <button
                           onClick={() => handleEdit(user)}
                           disabled={currentUser?._id === user._id}
                           className="disabled:opacity-50"
                         >
                           <PencilIcon className="w-6 h-6" />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleDelete(user._id)}
                           disabled={currentUser?._id === user._id}
                           className="text-red-600 hover:text-red-800 disabled:opacity-50"
                         >
                           <TrashIcon className="w-6 h-6" />
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   ))}
@@ -127,4 +135,4 @@ export default function UsersPage() {
       )}
     </div>
   );
-} 
+}
